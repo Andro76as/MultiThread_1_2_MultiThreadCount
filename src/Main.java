@@ -1,4 +1,6 @@
-import java.util.List;
+import java.awt.*;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.concurrent.*;
 
 public class Main {
@@ -10,8 +12,6 @@ public class Main {
         Callable<Integer> myCallable2 = new MyCallable("Поток 2");
         Callable<Integer> myCallable3 = new MyCallable("Поток 3");
         Callable<Integer> myCallable4 = new MyCallable("Поток 4");
-
-        final List<Callable<Integer>> myCallableList = List.of(myCallable1, myCallable2, myCallable3, myCallable4);
 
         // Создаем пул потоков
         ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -33,7 +33,7 @@ public class Main {
             e.printStackTrace();
         }
         try {
-            Integer result = threadPool.invokeAny(myCallableList);
+            Integer result = threadPool.invokeAny(Arrays.asList(myCallable1,myCallable2,myCallable3,myCallable4));
             System.out.println("Результат самой быстрой задачи " + result);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
