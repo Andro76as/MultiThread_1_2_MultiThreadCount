@@ -1,10 +1,8 @@
-import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.concurrent.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Создаю потоки...");
 
         // Создаем задачу
@@ -29,15 +27,14 @@ public class Main {
             System.out.println(myCallable3 + " выполнил задачу " + task3.get() + " раз.");
             System.out.println(myCallable4 + " выполнил задачу " + task4.get() + " раз.");
 
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
-        try {
-            Integer result = threadPool.invokeAny(Arrays.asList(myCallable1,myCallable2,myCallable3,myCallable4));
-            System.out.println("Результат самой быстрой задачи " + result);
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+
+        Integer result = threadPool.invokeAny(Arrays.asList(myCallable1, myCallable2, myCallable3, myCallable4));
+        System.out.println("Результат самой быстрой задачи " + result);
         System.out.println("Завершаю все потоки...");
         threadPool.shutdown();
     }
