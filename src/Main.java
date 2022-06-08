@@ -1,5 +1,7 @@
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.*;
+
 
 public class Main {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -12,7 +14,7 @@ public class Main {
         Callable<Integer> myCallable4 = new MyCallable("Поток 4");
 
         // Создаем пул потоков
-        ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        ExecutorService threadPool = Executors.newFixedThreadPool(4);
 
         // Отправляем задачу на выполнение в пул потоков
 
@@ -33,8 +35,16 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-        Integer result = threadPool.invokeAny(Arrays.asList(myCallable1, myCallable2, myCallable3, myCallable4));
-        System.out.println("Результат самой быстрой задачи " + result);
+        List<Future<Integer>> result = threadPool.invokeAll(Arrays.asList(myCallable1, myCallable2, myCallable3, myCallable4));
+
+//        result.stream().map(i->i.get()).sorted().collect(Collectors.toList());
+//        System.out.println("Результат самой быстрой задачи " + result);
+
+        int min = Integer.MAX_VALUE;
+        for (Future<Integer> f : result) {
+            min = Math.min(min, f.get());
+        }
+        System.out.println("Результат самой быстрой задачи " + min);
         System.out.println("Завершаю все потоки...");
         threadPool.shutdown();
     }
