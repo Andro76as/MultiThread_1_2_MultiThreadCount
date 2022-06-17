@@ -9,7 +9,7 @@ public class MyCallable implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        int random = (int) (Math.random() * 10);
+        int random = (int) (Math.random() * 5);
         int count = 0;
         Thread.currentThread().setName(name);
         while (count <= random) {

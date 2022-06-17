@@ -14,7 +14,13 @@ public class Main {
         Callable<Integer> myCallable4 = new MyCallable("Поток 4");
 
         // Создаем пул потоков
-        ExecutorService threadPool = Executors.newFixedThreadPool(4);
+        //ExecutorService threadPool = Executors.newFixedThreadPool(4);
+        //        for (int i = 0; i < 5; i++) {
+        //            Future result = threadPool.submit(myCallable1);
+        //            System.out.println(result.get());
+        //        }
+
+        ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         // Отправляем задачу на выполнение в пул потоков
 
@@ -35,10 +41,19 @@ public class Main {
             throw new RuntimeException(e);
         }
 
+        // 1 Вариант invokeAny
+        try {
+            Integer result = threadPool.invokeAny(Arrays.asList(myCallable1, myCallable2, myCallable3, myCallable4));
+            System.out.println("Результат самой быстрой задачи " + result);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // 2 Вариант invokeAll
         List<Future<Integer>> result = threadPool.invokeAll(Arrays.asList(myCallable1, myCallable2, myCallable3, myCallable4));
 
-//        result.stream().map(i->i.get()).sorted().collect(Collectors.toList());
-//        System.out.println("Результат самой быстрой задачи " + result);
+        //        result.stream().map(i->i.get()).sorted().collect(Collectors.toList());
+        //        System.out.println("Результат самой быстрой задачи " + result);
 
         int min = Integer.MAX_VALUE;
         for (Future<Integer> f : result) {
